@@ -55,12 +55,38 @@ func parse(filename string) ([][]int, error) {
 	return [][]int{list1, list2}, nil
 }
 
+// frequency of each location repetition in each list
+func frequency(input [][]int) []map[int]int {
+	frequency1 := map[int]int{}
+	frequency2 := map[int]int{}
+	// traverse the lists and populate the frequency maps
+	for i := 0; i < len(input[0]); i++ {
+		frequency1[input[0][i]]++
+		frequency2[input[1][i]]++
+	}
+	return []map[int]int{frequency1, frequency2}
+}
+
+// similarity calculation by adding products of
+// a key in the left(first) map and frequency of that key in the other(right) map
+func similarity(lf []map[int]int) int {
+	var s int
+	// left list is traversed on according to example
+	for k := range lf[0] {
+		if f, ok := lf[1][k]; ok {
+			s += k * f
+		}
+	}
+	return s
+}
+
 func main() {
-	input, err := parse("./input.txt")
+	lists, err := parse("./input.txt")
 	if err != nil {
 		fmt.Printf("Error parsing input: %s\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Println("Total Distance = ", distance(input))
+	fmt.Println("Part1: Total Distance = ", distance(lists))
+	fmt.Println("Part2: Similarity = ", similarity(frequency(lists)))
 }

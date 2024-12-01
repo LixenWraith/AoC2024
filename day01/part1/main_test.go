@@ -27,7 +27,6 @@ func TestDistance(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := distance(tt.lists)
-
 			if !reflect.DeepEqual(result, tt.totalDistance) {
 				t.Errorf("result = %v, expected = %v", result, tt.totalDistance)
 			}
