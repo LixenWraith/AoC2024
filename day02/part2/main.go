@@ -11,6 +11,7 @@ import (
 	"strings"
 )
 
+// safeReport is false if either of the safe criteria fails
 func safeReport(report []int) bool {
 	if len(report) == 0 {
 		return false
@@ -27,7 +28,7 @@ func safeReport(report []int) bool {
 		!reflect.DeepEqual(rDesc, report) {
 		isSafe = false
 	} else {
-		// second check: skip the reports level distance to adjacent level is >3 or <1
+		// second check: skip the reports with level distance to adjacent level is >3 or <1
 		for i := 0; i < len(report); i++ {
 			if i > 0 {
 				d := math.Abs(float64(report[i] - report[i-1]))
@@ -73,7 +74,7 @@ func safe(reports [][]int) (int, error) {
 	return safeReports, nil
 }
 
-// parse converts the strictly structured test file into 2 int slices
+// parse converts the strictly structured test file into slice of int slices
 func parse(filename string) ([][]int, error) {
 	// read file into []byte
 	content, err := os.ReadFile(filename)

@@ -33,7 +33,7 @@ func safe(reports [][]int) (int, error) {
 			continue
 		} else {
 			unsafe := false
-			// second check: skip the reports level distance to adjacent level is >3 or <1
+			// second check: skip the reports with level distance to adjacent level is >3 or <1
 			for i := 0; i < len(reports[r]); i++ {
 				if i > 0 {
 					d := math.Abs(float64(reports[r][i] - reports[r][i-1]))
@@ -59,7 +59,7 @@ func safe(reports [][]int) (int, error) {
 	return safeReports, nil
 }
 
-// parse converts the strictly structured test file into 2 int slices
+// parse converts the strictly structured test file into slice of int slices
 func parse(filename string) ([][]int, error) {
 	// read file into []byte
 	content, err := os.ReadFile(filename)

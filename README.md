@@ -10,4 +10,6 @@ https://adventofcode.com/2024/day/1
 
 https://adventofcode.com/2024/day/2
 
+## Day 3: "Mull It Over"
 
+https://adventofcode.com/2024/day/3
