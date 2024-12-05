@@ -4,10 +4,12 @@ AoC 2024 solutions in Go.
 
 ### Usage
 
-no external dependencies.
+No external dependencies.
 
+Use below bash command with Git and Go installed to run day XX, part Y exercise.
 ```bash
-cd AoC2024/dayXX/partX && go run main.go
+git clone https://github.com/LixenWraith/AoC2024
+cd AoC2024/dayXX/partY && go run main.go
 ```
 
 ## Day 1: Historian Hysteria
