@@ -50,7 +50,7 @@ func getIncorrectProductionOrders(orders map[int][]int, productionOrders [][]int
 	return incorrectProductionOrders
 }
 
-// sum the middle page number of the production orders that have incorrect page order
+// sum the middle page number of the production orders that have incorrect page order after correcting them by custom sort
 func midpageSum(orders map[int][]int, incorrectProductionOrders [][]int) int {
 	midPageSum := 0
 	for i := 0; i < len(incorrectProductionOrders); i++ {

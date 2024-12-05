@@ -36,7 +36,7 @@ https://adventofcode.com/2024/day/4
 
 ## Day 5: Print Queue
 Got a bit stuck on part1 because I didn't read the last paragraph, but overall it was smooth and fun.
-Based on yesterday and today, seems functional programming and making the first part makes the second part much easier to implement.
+Based on yesterday and today, seems using functional programming in part 1 makes implementing part 2 much faster.
 It also made testing of part 2 logic much simpler, though there was no need for test because the answer was correct first try past 2 days.
 
 https://adventofcode.com/2024/day/5
