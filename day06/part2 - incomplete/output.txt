@@ -1,0 +1,10 @@
+........#.
+......#XX.
+...#XXXXX.
+....X.XXX.
+#XXXXXXXX.
+.X..X.XXX.
+.X..XXXXX#
+.X..#.XXXX
+.XXXXXX#..
+.#........

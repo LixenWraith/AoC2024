@@ -85,7 +85,7 @@ func customSort(orders map[int][]int, incorrectProductionOrder []int) []int {
 			}
 		}
 
-		// default to normal ordering (no change) when order is not defined
+		// default to normal sort when order is not defined
 		return a < b
 	})
 	return productionOrder

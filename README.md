@@ -40,3 +40,21 @@ Based on yesterday and today, seems using functional programming in part 1 makes
 It also made testing of part 2 logic much simpler, though there was no need for test because the answer was correct first try past 2 days.
 
 https://adventofcode.com/2024/day/5
+
+## Day 6: Guard Gallivant
+
+Good exercise for mini-game creation. Part 1 is working, Part 2 is incomplete.
+
+https://adventofcode.com/2024/day/6
+
+## Day 7: Bridge Repair
+
+Though part 1 is very fast, part 2 takes about a minute to complete.
+Minimal logic change between parts and just the operation structure expanded from 1-bit representation of operation to 2-bits.
+Lots of room for optimization, but moving on for now.
+
+https://adventofcode.com/2024/day/7
+
+## Day 8: Resonant Collinearity
+
+https://adventofcode.com/2024/day/8
