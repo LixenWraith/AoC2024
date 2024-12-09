@@ -61,9 +61,7 @@ func calc(opsMap fullStructure) uint64 {
 func generateOpsMap(numbersMap fullStructure) fullStructure {
 	opsMap := make(fullStructure)
 
-	// fmt.Println("== generateOpsMap, numbersMap from parse: ", numbersMap)
 	for k, v := range numbersMap {
-		// fmt.Println("-- Checking (result, numbers): ", k, v)
 		lo := lineOps(k, v)
 		if len(lo) > 0 {
 			for i := 0; i < len(lo); i++ {
@@ -110,7 +108,7 @@ func isValidOps(testValue uint64, numbers halfStructure, ops uint64) bool {
 		} else {
 			// lowest n bits represent the next operation, n is bitsPerOp
 			opBits := ops & getMask(bitsPerOp, 1) // apply mask for next operation filtering
-			ops = ops >> bitsPerOp
+			ops = ops >> bitsPerOp                // shift out the next operation from operaions sequence
 			switch opBits {
 			case OpAdd:
 				equation += numbers[i]

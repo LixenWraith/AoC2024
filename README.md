@@ -57,4 +57,7 @@ https://adventofcode.com/2024/day/7
 
 ## Day 8: Resonant Collinearity
 
+Relatively easy and quick to implement (maybe because I skipped unit tests).
+There were many opportunities to make small but consequential calculation/referencing mistakes.
+
 https://adventofcode.com/2024/day/8

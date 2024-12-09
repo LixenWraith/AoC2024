@@ -1,8 +1,9 @@
-// AoC 2024, Day 8, Part 1, Lixen Wraith
+// AoC 2024, Day 8, Part 2, Lixen Wraith
 package main
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"strings"
 )
@@ -69,17 +70,18 @@ func (m *AntennaFrequencyMap) ScanFrequencies() {
 	}
 }
 
+// counts antinodes
+func (m *AntennaFrequencyMap) AntinodeCount() int {
+	return len(m.Antinodes)
+}
+
 // put valid antinodes in Antinodes map
 func (m *AntennaFrequencyMap) DetectAntinodes() {
 	for fn := range m.Frequencies {
 		m.detectFrequencyAntiNodes(fn)
 	}
-	m.removeInvalidAntinodes()
-}
 
-// counts antinodes
-func (m *AntennaFrequencyMap) AntinodeCount() int {
-	return len(m.Antinodes)
+	m.removeInvalidAntinodes()
 }
 
 // traverse over the frequency's antenna position pairs and calculate the antinodes
@@ -91,33 +93,42 @@ func (m *AntennaFrequencyMap) detectFrequencyAntiNodes(fn int) {
 			if a1 == a2 {
 				continue
 			}
-			anti1, anti2 := m.getAntinodes(m.Frequencies[fn][a1], m.Frequencies[fn][a2])
-			if _, ok := m.Antinodes[anti1]; ok {
-				m.Antinodes[anti1] = rune(fn)
+
+			antinodeHarmonics := m.getAntinodes(m.Frequencies[fn][a1], m.Frequencies[fn][a2])
+			for _, a := range antinodeHarmonics {
+				if _, ok := m.Antinodes[a]; !ok && m.inBounds(a) {
+					m.Antinodes[a] = rune(fn)
+				}
 			}
-			if _, ok := m.Antinodes[anti2]; !ok {
-				m.Antinodes[anti2] = rune(fn)
-			}
+
 		}
 	}
 }
 
 // return antinode positions of 2 antennas
-func (m *AntennaFrequencyMap) getAntinodes(antenna1, antenna2 position) (position, position) {
+func (m *AntennaFrequencyMap) getAntinodes(antenna1, antenna2 position) (atinodeHarmonics []position) {
 	dy := antenna2.y - antenna1.y
 	dx := antenna2.x - antenna1.x
+	harmonicRangeY := int(math.Abs(float64(m.yMax/dy))) + 1
+	harmonicRangeX := int(math.Abs(float64(m.xMax/dx))) + 1
+	ah := []position{}
 
-	antinode1 := position{
-		y: antenna2.y + dy,
-		x: antenna2.x + dx,
+	for i := min(-harmonicRangeY, -harmonicRangeX); i < max(harmonicRangeY, harmonicRangeX); i++ {
+		hy := antenna1.y - (i * dy)
+		hx := antenna1.x - (i * dx)
+		if m.inBounds(position{hy, hx}) {
+			ah = append(ah, position{hy, hx})
+		}
 	}
 
-	antinode2 := position{
-		y: antenna1.y - dy,
-		x: antenna1.x - dx,
-	}
+	return ah
+}
 
-	return antinode1, antinode2
+func (m *AntennaFrequencyMap) inBounds(p position) bool {
+	if p.y < 0 || p.y >= m.yMax || p.x < 0 || p.x >= m.xMax {
+		return false
+	}
+	return true
 }
 
 // puts the antinodes on the map for visualizations
@@ -136,7 +147,7 @@ func (m *AntennaFrequencyMap) SetAntinodes(r ...rune) {
 func (m *AntennaFrequencyMap) removeInvalidAntinodes() {
 	for p := range m.Antinodes {
 		// remove out of boundary
-		if p.y < 0 || p.y >= m.yMax || p.x < 0 || p.x >= m.xMax {
+		if !m.inBounds(p) {
 			delete(m.Antinodes, p)
 			continue
 		}
@@ -201,12 +212,11 @@ func main() {
 	}
 
 	antennaFrequencyMap := NewAntennaFrequencyMap(parse(input))
-
 	antennaFrequencyMap.PrintMap()
 	antennaFrequencyMap.ScanFrequencies()
 	antennaFrequencyMap.DetectAntinodes()
 	antennaFrequencyMap.SetAntinodes()
 	antennaFrequencyMap.PrintMap()
 
-	fmt.Printf("Part 1 : Number of valid antinodes = %d\n", antennaFrequencyMap.AntinodeCount())
+	fmt.Printf("Part 2 : Number of valid antinode harmonics = %d\n", antennaFrequencyMap.AntinodeCount())
 }

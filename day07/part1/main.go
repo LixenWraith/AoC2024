@@ -75,7 +75,7 @@ func isValidOps(testValue uint64, numbers halfStructure, ops uint64) bool {
 		} else {
 			// lowest bit is the next operation
 			opBit := ops & 0b1
-			ops = ops >> 1
+			ops = ops >> 1 // remove lowest bit
 			switch opBit {
 			case OpAdd:
 				equation += numbers[i]
