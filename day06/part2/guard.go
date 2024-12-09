@@ -8,7 +8,7 @@ import (
 // guard info
 type Guard struct {
 	InBounds      bool
-	X, Y, Visited int
+	Y, X, Visited int
 	Direction     byte
 }
 
@@ -23,8 +23,8 @@ const (
 // guard position delta for one step move in any direciton
 var (
 	// indexed by direction bits
-	dx = [4]int{0, 1, 0, -1} // Up, Right, Down, Left
 	dy = [4]int{-1, 0, 1, 0} // Up, Right, Down, Left
+	dx = [4]int{0, 1, 0, -1} // Up, Right, Down, Left
 )
 
 // changes guard direction according to rules
@@ -36,46 +36,46 @@ func (g *Guard) rotate() {
 	}
 }
 
-func (g *Guard) TraceBack(x, y int, d byte) (traceX, traceY int) {
-	return x - dx[d], y - dy[d]
+func (g *Guard) TraceBack(y, x int, d byte) (traceY, traceX int) {
+	return y - dy[d], x - dx[d]
 }
 
 // returns false if can't move in the current direction, visit counted on moving away from location
 func (g *Guard) move(m *Map) (bool, error) {
-	newX, newY := g.X+dx[g.Direction], g.Y+dy[g.Direction]
+	newY, newX := g.Y+dy[g.Direction], g.X+dx[g.Direction]
 	if visualize {
-		fmt.Printf("( X %d , Y %d -> %d , %d ) , dir %2b , dx %d , dy %d\n",
-			g.X, g.X, newX, newY, g.Direction, dx[g.Direction], dy[g.Direction])
+		fmt.Printf("( Y %d , X %d -> %d , %d ) , dir %2b , dy %d , dx %d\n",
+			g.Y, g.X, newY, newX, g.Direction, dy[g.Direction], dx[g.Direction])
 	}
 
-	if newX < 0 || newY < 0 || newX >= m.XMax || newY >= m.YMax {
+	if newY < 0 || newY >= m.YMax || newX < 0 || newX >= m.XMax {
 		g.InBounds = false
 		return true, nil
 	} // position not changed for less code and avoiding potential out of bound slice referencing
 
-	if m.Level[newX][newY] == '#' {
+	if m.Level[newY][newX] == '#' {
 		if visualize {
-			fmt.Printf("# wall @ ( %d , %d )\n", newX, newY)
-			fmt.Printf("# current %c ahead %c visited %v\n", m.Level[g.X][g.Y], m.Level[newX][newY], g.Visited)
+			fmt.Printf("# wall @ ( %d , %d )\n", newY, newX)
+			fmt.Printf("# current %c ahead %c visited %v\n", m.Level[g.Y][g.X], m.Level[newY][newX], g.Visited)
 		}
 		return false, nil
 	}
 
 	if visualize {
-		fmt.Printf(" current %c ahead %c visited %v\n", m.Level[g.X][g.Y], m.Level[newX][newY], g.Visited)
+		fmt.Printf(" current %c ahead %c visited %v\n", m.Level[g.Y][g.X], m.Level[newY][newX], g.Visited)
 	}
 
-	g.X = newX
 	g.Y = newY
+	g.X = newX
 
 	// count it if was not visited
-	vl := m.VisitLog(g.X, g.Y)
+	vl := m.VisitLog(g.Y, g.X)
 	if vl == nil {
 		g.Visited++
-		m.SetVisited(g.X, g.Y, g.Direction)
+		m.SetVisited(g.Y, g.X, g.Direction)
 	} else {
 		if _, looped := vl[g.Direction]; looped {
-			return false, fmt.Errorf("looped x %d y %d d %b", g.X, g.Y, g.Direction)
+			return false, fmt.Errorf("looped y %d x %d d %b", g.Y, g.X, g.Direction)
 		}
 	}
 
@@ -89,7 +89,7 @@ func (g *Guard) move(m *Map) (bool, error) {
 // patrol the guard throughout the map till out of bounds
 func (g *Guard) Patrol(m *Map) error {
 	g.Visited++
-	m.SetVisited(g.X, g.Y, g.Direction)
+	m.SetVisited(g.Y, g.X, g.Direction)
 
 	for {
 		if !g.InBounds {

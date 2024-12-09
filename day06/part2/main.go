@@ -13,10 +13,9 @@ var visualize bool
 // parse the input into slice (lines) of int slice (elements in each line)
 func parse(input []byte) (*Map, *Guard) {
 	content := strings.Split(string(input), "\n")
-	// traversed map cuz I like x,y coords
-	output := make([][]rune, len(content[0]))
+	output := make([][]rune, len(content))
 	for i := 0; i < len(output); i++ {
-		output[i] = make([]rune, len(content))
+		output[i] = make([]rune, len(content[0]))
 	}
 	g := &Guard{}
 
@@ -27,20 +26,20 @@ func parse(input []byte) (*Map, *Guard) {
 			// extracts guard info from map and sets guard position to open space
 			if c == '^' {
 				g.InBounds = true
-				g.X = x
 				g.Y = y
+				g.X = x
 				g.Direction = DirUp
-				output[x][y] = '.'
+				output[y][x] = '.'
 			} else {
-				output[x][y] = c
+				output[y][x] = c
 			}
 		}
 	}
 	return &Map{
 		Level:   output,
 		Visited: make(map[int]map[int]map[byte]bool),
-		XMax:    len(output[0]),
 		YMax:    len(output),
+		XMax:    len(output[0]),
 	}, g
 }
 
@@ -73,8 +72,9 @@ func writeToFile(filename string, m *Map) error {
 }
 
 func main() {
-	// filename := "./input.txt"
-	filename := "./example.txt"
+	filename := "./input.txt"
+	// filename := "./example.txt"
+	// filename := "./simple.txt"
 	input, err := inputFromFile(filename)
 	if err != nil {
 		fmt.Printf("Error reading input file: %s\n", err)
@@ -93,7 +93,7 @@ func main() {
 	// for visual debug
 	// visualize = false
 	// visualize = true
-	guard.Patrol(levelMap)
+	_ = guard.Patrol(levelMap)
 
 	levelMap.MarkVisited()
 
