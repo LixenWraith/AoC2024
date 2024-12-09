@@ -43,7 +43,7 @@ https://adventofcode.com/2024/day/5
 
 ## Day 6: Guard Gallivant
 
-Good exercise for mini-game creation. Part 1 is working, Part 2 is incomplete.
+Good exercise for mini-game creation. Made the code too large and confused myself in part 2.
 
 https://adventofcode.com/2024/day/6
 
