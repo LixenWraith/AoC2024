@@ -4,64 +4,91 @@ package main
 import (
 	"fmt"
 	"os"
-	"strconv"
-	"strings"
 )
-
-// colors for visualization
-const (
-	red    = "\033[31m"
-	green  = "\033[32m"
-	yellow = "\033[33m"
-	reset  = "\033[0m"
-)
-
-// number of bits representing an operation in an operations bit sequence
-const bitsPerOp uint64 = 2
 
 // data types
-type grid = [][]rune   // [y][x]
-type gridLine = []rune // [x]
+type data = []int
+type index = []byte
 
-type nestedMapStructure = map[uint64]map[uint64]uint64 // full data structure for input/output
-type mapStructure = map[uint64]uint64                  // half data structure for line operations
+const (
+	recordLength = 2  // 1 digit for file blocks, 1 digit for free blocks
+	freeSpace    = -1 // file id for free space
+)
 
-// visualize
-func visualize(g grid) {
-	lineCount := 0
-	for y := range g {
-		for x := range y {
-			switch g[y][x] {
-			case '#':
-				fmt.Printf("%s%c%s", green, g[y][x], reset)
-			case '.':
-				fmt.Printf("%c", g[y][x])
-			default:
-				fmt.Printf("%s%c%s", red, g[y][x], reset)
-			}
+// disk checksum
+func checksum(disk data) uint64 {
+	var c uint64 = 0
+	for i := 0; i < len(disk); i++ {
+		d := disk[i]
+		if d != freeSpace {
+			c += uint64(i * disk[i])
 		}
-		fmt.Println()
-		lineCount++
 	}
-	fmt.Println()
-	lineCount++
-	// go up equal to printed lines to keep the output grid stationary
-	fmt.Print(strings.Join([]string{"\033[", strconv.Itoa(lineCount + 2), "A"}, ""))
+
+	return c
 }
 
-// parse the input into a grid
-func parse(input []byte) grid {
-	content := strings.Split(string(input), "\n")
-	g := make(grid, len(content))
+// move all file blockss to the beginning of the disk
+func compact(disk data) data {
+	j := len(disk)
+	d := make(data, j)
+	for i := 0; i < j; i++ {
+		d[i] = freeSpace
+		block := disk[i]
 
-	for y, line := range content {
-		g[y] = make(gridLine, len(line))
-		for x, r := range line {
-			g[y][x] = r
+		for block == freeSpace && i < j {
+			j--
+			block = disk[j]
 		}
+
+		d[i] = block
+	}
+	for j < len(disk) {
+		d[j] = freeSpace
+		j++
 	}
 
-	return g
+	return d
+}
+
+// convert diskmap into disk data blocks
+func unpack(diskMap index) (disk data) {
+	d := data{}
+	var fileRecordBlock, freeRecordBlock byte
+	fileId := freeSpace
+
+	for i := 0; i < len(diskMap)/recordLength; i++ {
+		fileId++
+
+		fileRecordBlock = diskMap[i*2]
+		writeDisk(&d, fileId, fileRecordBlock)
+
+		freeRecordBlock = diskMap[i*2+1]
+		writeDisk(&d, freeSpace, freeRecordBlock)
+	}
+
+	if len(diskMap)%recordLength != 0 {
+		writeDisk(&d, fileId+1, diskMap[len(diskMap)-1])
+	}
+
+	return d
+}
+
+func writeDisk(disk *data, id int, blocks byte) {
+	for diskWriter := 0; diskWriter < int(blocks); diskWriter++ {
+		*disk = append(*disk, id)
+	}
+}
+
+// create a byte slice with values equal to numerical text input ('0' -> 0)
+func parse(input []byte) index {
+	l := make(index, len(input))
+
+	for i, c := range input {
+		l[i] = c - byte('0')
+	}
+
+	return l
 }
 
 // read input file into a slice of byte
@@ -84,5 +111,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Part 1 :  = %d\n", input)
+	fmt.Printf("Part 1 : compact checksum = %d\n", checksum(compact(unpack(parse(input)))))
 }

@@ -20,8 +20,8 @@ const (
 const bitsPerOp uint64 = 2
 
 // data types
-type grid = [][]rune   // [y][x]
-type gridLine = []rune // [x]
+type grid = [][]rune // [y][x]
+type line = []rune   // [x]
 
 type nestedMapStructure = map[uint64]map[uint64]uint64 // full data structure for input/output
 type mapStructure = map[uint64]uint64                  // half data structure for line operations
@@ -46,7 +46,7 @@ func visualize(g grid) {
 	fmt.Println()
 	lineCount++
 	// go up equal to printed lines to keep the output grid stationary
-	fmt.Print(strings.Join([]string{"\033[", strconv.Itoa(lineCount + 2), "A"}, ""))
+	fmt.Print(strings.Join([]string{"\033[", strconv.Itoa(lineCount + 1), "A"}, ""))
 }
 
 // parse the input into a grid
@@ -54,9 +54,9 @@ func parse(input []byte) grid {
 	content := strings.Split(string(input), "\n")
 	g := make(grid, len(content))
 
-	for y, line := range content {
-		g[y] = make(gridLine, len(line))
-		for x, r := range line {
+	for y, l := range content {
+		g[y] = make(line, len(l))
+		for x, r := range l {
 			g[y][x] = r
 		}
 	}
@@ -84,5 +84,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Part 2 :  = %d\n", input)
+	fmt.Printf("Part 2 :  = %v\n", input)
 }
